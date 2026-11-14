@@ -3,4 +3,6 @@
 # rewrites os-release and issue. Run by a pacman hook.
 set -e
 install -m644 /usr/share/kitty-os/os-release /usr/lib/os-release
+# /etc/os-release should be a link to it; some images ship a plain file.
+ln -sfn ../usr/lib/os-release /etc/os-release
 install -m644 /usr/share/kitty-os/issue /etc/issue

@@ -65,7 +65,7 @@ jobs:
             catkeys stats
             catkeys waybar
             catkeys --version
-            fish -c "source /usr/share/fish/vendor_conf.d/kitty-os.fish; fish_greeting"
+            fish --no-execute /usr/share/fish/vendor_conf.d/kitty-os.fish
             sh -eu /etc/profile.d/kitty-os-desktop.sh
             fastfetch
           '
