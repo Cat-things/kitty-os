@@ -1,0 +1,155 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Shell scripts
+        run: |
+          shellcheck scripts/build-repo.sh scripts/kittyfy iso/build.sh \
+            iso/overlay/airootfs/usr/local/bin/kitty-live-user \
+            packages/kitty-os-rice/files/kitty-os-rice-apply \
+            packages/kitty-os-release/files/kitty-os-brand
+
+  packages:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Install build tools
+        run: pacman -Syu --noconfirm --needed base-devel git sway python-evdev fastfetch
+      - uses: actions/checkout@v4
+      - name: Build the package repository
+        run: |
+          useradd -m builder
+          chown -R builder: .
+          runuser -u builder -- scripts/build-repo.sh
+      - name: Install the packages
+        run: |
+          cd out/repo
+          pacman -U --noconfirm catkeys-*.pkg.tar.zst kitty-os-modes-*.pkg.tar.zst \
+            kitty-os-salma-mode-*.pkg.tar.zst kitty-os-rice-*.pkg.tar.zst \
+            kitty-os-release-*.pkg.tar.zst
+      - name: Try the commands as a new user
+        run: |
+          useradd -m tester
+          runuser -u tester -- bash -euxc '
+            cd
+            test "$(readlink .config/kitty-os/current)" = /usr/share/kitty-os/modes/cat
+            catmode list
+            catfact
+            catsay hello
+            catmode salma --no-apply
+            test "$(catmode waybar | python3 -c "import json,sys; print(json.load(sys.stdin)[\"class\"])")" = salma
+            catfact
+            meo-meo-meow
+            salma
+            salma feed
+            if salma feed tuna; then echo "tuna must be refused"; exit 1; fi
+            salma files path
+            catmode cat --no-apply
+            catkeys stats
+            catkeys waybar
+            catkeys --version
+            fastfetch
+          '
+          grep -q '^ID=kitty-os$' /etc/os-release
+          grep -q '^\[kitty-os\]$' /etc/pacman.conf
+      - name: Validate the sway config in both modes
+        run: |
+          for mode in cat salma; do
+            runuser -u tester -- bash -euc "
+              cd
+              catmode $mode --no-apply
+              mkdir -p /tmp/xdg-tester && chmod 700 /tmp/xdg-tester
+              export XDG_RUNTIME_DIR=/tmp/xdg-tester WLR_BACKENDS=headless WLR_RENDERER=pixman WLR_LIBINPUT_NO_DEVICES=1
+              sway --validate 2>&1 | tee /tmp/sway-$mode.log
+            "
+            if grep -q 'Error on line' /tmp/sway-$mode.log; then exit 1; fi
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kitty-os-repo
+          path: out/repo/
+          if-no-files-found: error
+
+  iso:
+    needs: [test, packages]
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+    steps:
+      - name: Install build tools
+        run: pacman -Syu --noconfirm --needed archiso git
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: kitty-os-repo
+          path: out/repo
+      - name: Build the ISO
+        run: iso/build.sh
+      - name: Checksum
+        run: cd out/iso && sha256sum kitty-os-*.iso | tee SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kitty-os-iso
+          path: |
+            out/iso/kitty-os-*.iso
+            out/iso/SHA256SUMS
+          compression-level: 0
+          if-no-files-found: error
+
+  publish:
+    # The default branch publishes the pacman repository and the ISO as releases.
+    if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
+    needs: iso
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: kitty-os-repo
+          path: repo
+      - uses: actions/download-artifact@v4
+        with:
+          name: kitty-os-iso
+          path: iso
+      - name: Publish the package repository
+        run: |
+          gh release view repo >/dev/null 2>&1 || gh release create repo \
+            --target "$GITHUB_SHA" --title "kitty-os package repository" \
+            --notes "The [kitty-os] pacman repository. pacman downloads from here; see the README."
+          gh release upload repo repo/* --clobber
+      - name: Publish the ISO
+        run: |
+          gh release view iso >/dev/null 2>&1 || gh release create iso \
+            --target "$GITHUB_SHA" --title "kitty-os ISO" \
+            --notes "The latest kitty-os live and install ISO, built from the default branch."
+          for old in $(gh release view iso --json assets --jq '.assets[].name'); do
+            gh release delete-asset iso "$old" --yes
+          done
+          # GitHub release files are limited to 2 GiB.
+          if [ "$(stat -c %s iso/kitty-os-*.iso)" -lt 2147483648 ]; then
+            gh release upload iso iso/*
+          else
+            echo "::warning::The ISO is over 2 GiB; get it from this run's artifacts instead."
+          fi

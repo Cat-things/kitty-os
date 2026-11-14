@@ -1,0 +1,27 @@
+{
+    "logo": {
+        "type": "file",
+        "source": "/usr/share/kitty-os/logo.txt",
+        "color": {"1": "magenta"},
+        "padding": {"top": 1, "left": 2, "right": 3}
+    },
+    "display": {
+        "separator": "  "
+    },
+    "modules": [
+        "title",
+        "separator",
+        {"type": "os", "key": "os"},
+        {"type": "kernel", "key": "kernel"},
+        {"type": "uptime", "key": "uptime"},
+        {"type": "packages", "key": "packages"},
+        {"type": "shell", "key": "shell"},
+        {"type": "wm", "key": "wm"},
+        {"type": "terminal", "key": "terminal"},
+        {"type": "command", "key": "cat mode", "text": "catmode show | head -n 1"},
+        {"type": "command", "key": "cats caught", "text": "catkeys stats | head -n 1 | cut -d: -f2"},
+        {"type": "memory", "key": "memory"},
+        "break",
+        "colors"
+    ]
+}

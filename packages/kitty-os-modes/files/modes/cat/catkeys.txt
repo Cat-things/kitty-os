@@ -1,0 +1,7 @@
+# Notification texts for the cat keyboard detector, one per line.
+Cat detected on the keyboard. Input paused.
+Paws off! Keyboard locked until the cat moves along.
+That was not typing. That was a cat.
+A loaf has been deployed on your keyboard.
+Your cat has opinions about what you were writing.
+Keyboard claimed by cat. Negotiations are pointless.

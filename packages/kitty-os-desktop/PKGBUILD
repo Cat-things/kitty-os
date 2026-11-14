@@ -1,0 +1,25 @@
+pkgname=kitty-os-desktop
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="The whole kitty-os desktop: install this on Arch and you have kitty-os"
+arch=('any')
+url="https://github.com/cat-things/kitty-os"
+license=('MIT')
+depends=(
+  # kitty-os
+  'kitty-os-release' 'kitty-os-modes' 'kitty-os-salma-mode' 'kitty-os-rice' 'catkeys'
+  # desktop
+  'sway' 'swaybg' 'swaylock' 'swayidle' 'waybar' 'fuzzel' 'mako' 'kitty'
+  'grim' 'slurp' 'wl-clipboard' 'libnotify' 'brightnessctl' 'xorg-xwayland'
+  'xdg-desktop-portal-wlr' 'xdg-user-dirs' 'xdg-utils' 'polkit' 'mesa'
+  # apps
+  'thunar' 'imv' 'pavucontrol' 'fastfetch' 'starship'
+  # sound
+  'pipewire' 'pipewire-pulse' 'wireplumber'
+  # fonts
+  'ttf-jetbrains-mono-nerd' 'noto-fonts' 'noto-fonts-emoji'
+)
+
+package() {
+  install -Dm644 "$startdir/../../LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

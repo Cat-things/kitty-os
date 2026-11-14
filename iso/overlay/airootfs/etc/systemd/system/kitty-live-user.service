@@ -1,0 +1,11 @@
+[Unit]
+Description=Create the kitty-os live user
+Before=getty@tty1.service systemd-user-sessions.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/kitty-live-user
+
+[Install]
+WantedBy=multi-user.target

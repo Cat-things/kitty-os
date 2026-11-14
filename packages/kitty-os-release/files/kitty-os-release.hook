@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = filesystem
+
+[Action]
+Description = Restoring the kitty-os identity...
+When = PostTransaction
+Exec = /usr/share/kitty-os/kitty-os-brand

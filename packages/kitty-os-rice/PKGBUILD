@@ -1,0 +1,21 @@
+pkgname=kitty-os-rice
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="kitty-os desktop rice: sway, waybar, kitty, fuzzel, mako and wallpapers"
+arch=('any')
+url="https://github.com/cat-things/kitty-os"
+license=('MIT')
+depends=('kitty-os-modes')
+optdepends=('sway: the window manager these configs are for')
+install=kitty-os-rice.install
+
+package() {
+  local files="$startdir/files"
+  install -d "$pkgdir/etc" "$pkgdir/usr/share/kitty-os/wallpapers"
+  cp -a "$files/skel" "$pkgdir/etc/skel"
+  chmod -R u=rwX,go=rX "$pkgdir/etc/skel"
+  install -m644 "$files"/wallpapers/*.png "$pkgdir/usr/share/kitty-os/wallpapers/"
+  install -Dm644 "$files/logo.txt" "$pkgdir/usr/share/kitty-os/logo.txt"
+  install -Dm755 "$files/kitty-os-rice-apply" "$pkgdir/usr/bin/kitty-os-rice-apply"
+  install -Dm644 "$startdir/../../LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

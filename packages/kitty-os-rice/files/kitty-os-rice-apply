@@ -1,0 +1,36 @@
+#!/bin/bash
+# Copies the kitty-os desktop configs from /etc/skel into your home.
+# Files you already have are kept unless you pass --force (which backs
+# them up first as NAME.bak).
+set -euo pipefail
+
+skel=${KITTY_OS_SKEL:-/etc/skel}
+force=0
+case "${1:-}" in
+    -f|--force) force=1 ;;
+    "") ;;
+    *) echo "usage: kitty-os-rice-apply [--force]" >&2; exit 2 ;;
+esac
+
+copied=0 kept=0
+while IFS= read -r -d '' source; do
+    relative=${source#"$skel"/}
+    target=$HOME/$relative
+    if [[ -e $target || -L $target ]]; then
+        # Which cat mode is active is your choice, not a config to reset.
+        if (( ! force )) || [[ $relative == .config/kitty-os/* ]] \
+                || cmp -s "$source" "$target"; then
+            kept=$((kept + 1))
+            continue
+        fi
+        mv -f "$target" "$target.bak"
+    fi
+    mkdir -p "$(dirname "$target")"
+    cp -a "$source" "$target"
+    copied=$((copied + 1))
+done < <(find "$skel" -mindepth 1 \( -type f -o -type l \) -print0)
+
+echo "kitty-os rice: $copied file(s) copied, $kept kept as they were."
+if (( kept && ! force )); then
+    echo "Run 'kitty-os-rice-apply --force' to replace the kept ones (backups: NAME.bak)."
+fi

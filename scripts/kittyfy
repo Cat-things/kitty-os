@@ -1,0 +1,68 @@
+#!/bin/bash
+# kittyfy - turns an Arch Linux install into kitty-os.
+#
+#   kittyfy            the system you are running right now
+#   kittyfy /mnt       a freshly installed system mounted at /mnt
+#                      (what you want right after archinstall on the live ISO)
+#
+# It installs the kitty-os-desktop package, and gives every regular user the
+# desktop configs and access to the keyboard for catkeys.
+set -euo pipefail
+
+repo_url=https://github.com/cat-things/kitty-os/releases/download/repo
+iso_packages=/opt/kitty-os-repo
+
+die() { echo "kittyfy: $*" >&2; exit 1; }
+
+case "${1:-}" in
+    -h|--help) sed -n '2,10s/^# \{0,1\}//p' "$0"; exit 0 ;;
+esac
+
+(( EUID == 0 )) || die "run me as root (sudo kittyfy)"
+target=$(realpath "${1:-/}")
+[[ -f $target/etc/pacman.conf ]] || die "$target does not look like an Arch install"
+
+in_target() {
+    if [[ $target == / ]]; then
+        "$@"
+    else
+        arch-chroot "$target" "$@"
+    fi
+}
+
+if compgen -G "$iso_packages/*.pkg.tar.zst" >/dev/null; then
+    echo "==> Installing kitty-os from the packages on this ISO"
+    stage=$target/var/cache/kitty-os-install
+    rm -rf "$stage"
+    mkdir -p "$stage"
+    cp "$iso_packages"/*.pkg.tar.zst "$stage/"
+    in_target pacman -Syu --noconfirm
+    in_target bash -c 'pacman -U --noconfirm --needed /var/cache/kitty-os-install/*.pkg.tar.zst'
+    rm -rf "$stage"
+else
+    echo "==> Installing kitty-os from $repo_url"
+    if ! grep -q '^\[kitty-os\]' "$target/etc/pacman.conf"; then
+        printf '\n[kitty-os]\nSigLevel = Optional TrustAll\nServer = %s\n' "$repo_url" \
+            >> "$target/etc/pacman.conf"
+    fi
+    in_target pacman -Syu --noconfirm --needed kitty-os-desktop
+fi
+
+echo "==> Setting up users"
+while IFS=: read -r user _ uid _ _ home _; do
+    (( uid >= 1000 && uid < 60000 )) || continue
+    [[ -d $target$home ]] || continue
+    echo "    $user"
+    in_target usermod -aG input "$user"
+    in_target runuser -u "$user" -- kitty-os-rice-apply
+done < "$target/etc/passwd"
+
+cat <<'DONE'
+
+ /\_/\
+( ^.^ )  kitty-os is installed.
+ > ^ <
+
+Log in on the first console and the desktop starts. Users created later get
+it automatically; they only need: sudo usermod -aG input NAME
+DONE

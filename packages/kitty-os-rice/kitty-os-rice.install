@@ -1,0 +1,4 @@
+post_install() {
+  echo ":: New users get the kitty-os desktop automatically."
+  echo "   For an existing user, run as that user:  kitty-os-rice-apply"
+}

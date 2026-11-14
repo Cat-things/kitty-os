@@ -1,0 +1,164 @@
+# kitty-os sway config
+# Docs: man 5 sway. Cat mode specifics come from ~/.config/kitty-os/current.
+
+set $mod Mod4
+set $left h
+set $down j
+set $up k
+set $right l
+set $term kitty
+set $menu fuzzel
+
+# Catppuccin Mocha
+set $base     #1e1e2e
+set $mantle   #181825
+set $crust    #11111b
+set $text     #cdd6f4
+set $subtext  #a6adc8
+set $surface0 #313244
+set $surface1 #45475a
+set $overlay  #6c7086
+set $red      #f38ba8
+
+# Defaults, replaced by the active cat mode on the next line.
+set $accent #cba6f7
+set $wallpaper /usr/share/kitty-os/wallpapers/cat.png
+include ~/.config/kitty-os/current/sway.conf
+
+### Look
+font pango:JetBrainsMono Nerd Font 10
+output * bg $wallpaper fill
+default_border pixel 3
+default_floating_border pixel 3
+titlebar_padding 8 4
+gaps inner 10
+gaps outer 4
+focus_follows_mouse yes
+
+# class                 border    background text   indicator child border
+client.focused          $accent   $accent    $crust $accent   $accent
+client.focused_inactive $surface1 $surface0  $text  $surface1 $surface1
+client.unfocused        $surface0 $base      $subtext $surface0 $surface0
+client.urgent           $red      $red       $crust $red      $red
+
+### Input
+input type:touchpad {
+    tap enabled
+    natural_scroll enabled
+    dwt enabled
+}
+input type:keyboard {
+    repeat_delay 300
+    repeat_rate 40
+}
+
+### Programs
+bindsym $mod+Return exec $term
+bindsym $mod+d exec $menu
+bindsym $mod+b exec firefox
+bindsym $mod+e exec thunar
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+c reload
+bindsym $mod+Escape exec swaylock -f
+bindsym $mod+Shift+e exec swaynag -t warning -m 'Leave sway?' -B 'Log out' 'swaymsg exit' -B 'Reboot' 'systemctl reboot' -B 'Power off' 'systemctl poweroff'
+
+### Cat things
+# Next cat mode (cat -> salma -> ...)
+bindsym $mod+Shift+m exec catmode next
+# A cat fact
+bindsym $mod+c exec notify-send -a catfact "🐾 Cat fact" "$(catfact)"
+# The cat is gone, give me my keyboard back / pause detection for games
+bindsym $mod+u exec catkeys unlock
+bindsym $mod+Shift+u exec catkeys pause
+
+### Screenshots (saved to ~/Pictures and copied)
+bindsym Print exec mkdir -p ~/Pictures && grim - | tee ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png | wl-copy -t image/png
+bindsym $mod+Shift+s exec mkdir -p ~/Pictures && grim -g "$(slurp)" - | tee ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png | wl-copy -t image/png
+
+### Media keys
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+
+### Windows
+floating_modifier $mod normal
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+f fullscreen
+bindsym $mod+v splith
+bindsym $mod+g splitv
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+t layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+### Workspaces
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+
+mode "resize" {
+    bindsym $left resize shrink width 20px
+    bindsym $down resize grow height 20px
+    bindsym $up resize shrink height 20px
+    bindsym $right resize grow width 20px
+    bindsym Left resize shrink width 20px
+    bindsym Down resize grow height 20px
+    bindsym Up resize shrink height 20px
+    bindsym Right resize grow width 20px
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+### Window rules
+for_window [app_id="imv"] floating enable
+for_window [app_id="pavucontrol"] floating enable
+for_window [window_role="pop-up"] floating enable
+
+### Bar and background services
+bar {
+    swaybar_command waybar
+}
+exec mako
+exec catkeys daemon
+exec swayidle -w timeout 600 'swaylock -f' timeout 900 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' before-sleep 'swaylock -f'
+
+include /etc/sway/config.d/*

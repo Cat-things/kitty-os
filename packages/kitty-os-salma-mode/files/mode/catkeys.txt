@@ -1,0 +1,6 @@
+# Notification texts for the cat keyboard detector in Salma mode.
+Salma is on the keyboard. Input paused.
+Salma has walked across the keyboard again.
+Salma detected. Whatever that was, she did not mean to send it.
+Keyboard claimed by Salma. Try saying meo-meo-meow.
+Salma is typing… no she isn't. Locked.

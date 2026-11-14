@@ -1,0 +1,5 @@
+
+# The kitty-os package repository (catkeys, cat modes, the rice).
+[kitty-os]
+SigLevel = Optional TrustAll
+Server = https://github.com/cat-things/kitty-os/releases/download/repo

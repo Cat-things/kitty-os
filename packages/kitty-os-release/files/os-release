@@ -1,0 +1,11 @@
+NAME="kitty-os"
+PRETTY_NAME="kitty-os"
+ID=kitty-os
+ID_LIKE=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;2;203;166;247"
+HOME_URL="https://github.com/cat-things/kitty-os"
+DOCUMENTATION_URL="https://github.com/cat-things/kitty-os#readme"
+SUPPORT_URL="https://github.com/cat-things/kitty-os/issues"
+BUG_REPORT_URL="https://github.com/cat-things/kitty-os/issues"
+LOGO=kitty-os

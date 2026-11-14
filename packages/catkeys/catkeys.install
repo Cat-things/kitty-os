@@ -1,0 +1,5 @@
+post_install() {
+  echo ":: catkeys reads keyboards through /dev/input, so your user must be"
+  echo "   in the 'input' group:  sudo usermod -aG input \$USER  (then log in again)"
+  echo "   Start it with 'catkeys daemon' or: systemctl --user enable --now catkeys"
+}

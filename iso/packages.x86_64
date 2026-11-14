@@ -1,0 +1,7 @@
+# Packages added on top of the Arch "releng" live ISO.
+# The kitty-os ones come from the repository built by scripts/build-repo.sh.
+kitty-os-desktop
+firefox
+sudo
+git
+bash-completion

@@ -1,0 +1,19 @@
+# kitty-os prompt
+add_newline = true
+format = "$directory$git_branch$git_status$python$nodejs$rust$cmd_duration$line_break$character"
+
+[character]
+success_symbol = "[🐾 ❯](bold purple)"
+error_symbol = "[🙀 ❯](bold red)"
+
+[directory]
+style = "bold blue"
+truncation_length = 3
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+[cmd_duration]
+min_time = 2000
+style = "yellow"

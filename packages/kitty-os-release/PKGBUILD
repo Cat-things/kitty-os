@@ -1,0 +1,17 @@
+pkgname=kitty-os-release
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="kitty-os identity (os-release, login banner) and package repository setup"
+arch=('any')
+url="https://github.com/cat-things/kitty-os"
+license=('MIT')
+depends=('filesystem' 'pacman')
+install=kitty-os-release.install
+
+package() {
+  local files="$startdir/files"
+  install -Dm644 -t "$pkgdir/usr/share/kitty-os" "$files/os-release" "$files/issue" "$files/kitty-os.repo"
+  install -Dm755 "$files/kitty-os-brand" "$pkgdir/usr/share/kitty-os/kitty-os-brand"
+  install -Dm644 "$files/kitty-os-release.hook" "$pkgdir/usr/share/libalpm/hooks/kitty-os-release.hook"
+  install -Dm644 "$startdir/../../LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

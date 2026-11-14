@@ -1,0 +1,22 @@
+pkgname=catkeys
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Cat keyboard detector: locks the keyboard when a cat walks, sits or lands on it"
+arch=('any')
+url="https://github.com/cat-things/kitty-os"
+license=('MIT')
+depends=('python' 'python-evdev')
+optdepends=('libnotify: desktop notifications'
+            'sway: keyboard locking out of the box')
+backup=('etc/catkeys.conf')
+install=catkeys.install
+
+package() {
+  local files="$startdir/files"
+  install -d "$pkgdir/usr/lib/catkeys/catkeys"
+  install -m644 "$files"/catkeys/*.py "$pkgdir/usr/lib/catkeys/catkeys/"
+  install -Dm755 "$files/catkeys.bin" "$pkgdir/usr/bin/catkeys"
+  install -Dm644 "$files/catkeys.conf" "$pkgdir/etc/catkeys.conf"
+  install -Dm644 "$files/catkeys.service" "$pkgdir/usr/lib/systemd/user/catkeys.service"
+  install -Dm644 "$startdir/../../LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

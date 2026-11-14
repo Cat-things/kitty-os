@@ -1,0 +1,20 @@
+pkgname=kitty-os-salma-mode
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Salma mode for kitty-os: a cat mode about one particular cat"
+arch=('any')
+url="https://github.com/cat-things/kitty-os"
+license=('MIT')
+depends=('python' 'kitty-os-modes')
+optdepends=('kitty-os-rice: Salma wallpaper and desktop integration'
+            'xdg-user-dirs: find your pictures folder')
+
+package() {
+  local files="$startdir/files"
+  install -Dm644 "$files/salma.py" "$pkgdir/usr/lib/kitty-os/salma.py"
+  install -Dm755 -t "$pkgdir/usr/bin" "$files"/bin/*
+  install -d "$pkgdir/usr/share/kitty-os/modes"
+  cp -r "$files/mode" "$pkgdir/usr/share/kitty-os/modes/salma"
+  chmod -R u=rwX,go=rX "$pkgdir/usr/share/kitty-os"
+  install -Dm644 "$startdir/../../LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

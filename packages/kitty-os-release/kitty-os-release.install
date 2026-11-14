@@ -1,0 +1,16 @@
+post_install() {
+  /usr/share/kitty-os/kitty-os-brand
+  if ! grep -q '^\[kitty-os\]' /etc/pacman.conf; then
+    cat /usr/share/kitty-os/kitty-os.repo >> /etc/pacman.conf
+    echo ":: Added the [kitty-os] repository to /etc/pacman.conf"
+  fi
+}
+
+post_upgrade() {
+  /usr/share/kitty-os/kitty-os-brand
+}
+
+post_remove() {
+  echo ":: The [kitty-os] section in /etc/pacman.conf was left in place; remove it by hand."
+  echo "   Reinstall the 'filesystem' package to get the Arch os-release back."
+}

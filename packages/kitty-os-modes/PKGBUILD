@@ -1,0 +1,20 @@
+pkgname=kitty-os-modes
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="kitty-os cat modes: catmode, catfact, catsay, pspsps and the default cat mode"
+arch=('any')
+url="https://github.com/cat-things/kitty-os"
+license=('MIT')
+depends=('python')
+optdepends=('libnotify: notification when the mode changes'
+            'kitty-os-salma-mode: Salma mode')
+
+package() {
+  local files="$startdir/files"
+  install -d "$pkgdir/usr/lib/kitty-os/kittyos" "$pkgdir/usr/share/kitty-os/modes"
+  install -m644 "$files"/kittyos/*.py "$pkgdir/usr/lib/kitty-os/kittyos/"
+  install -Dm755 -t "$pkgdir/usr/bin" "$files"/bin/*
+  cp -r "$files/modes/cat" "$pkgdir/usr/share/kitty-os/modes/cat"
+  chmod -R u=rwX,go=rX "$pkgdir/usr/share/kitty-os"
+  install -Dm644 "$startdir/../../LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

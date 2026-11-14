@@ -1,0 +1,6 @@
+#!/bin/sh
+# Puts the kitty-os identity back after the Arch 'filesystem' package
+# rewrites os-release and issue. Run by a pacman hook.
+set -e
+install -m644 /usr/share/kitty-os/os-release /usr/lib/os-release
+install -m644 /usr/share/kitty-os/issue /etc/issue

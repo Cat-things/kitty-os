@@ -1,0 +1,9 @@
+#!/bin/bash
+# Creates the passwordless user the live ISO logs in as. It gets its desktop
+# from /etc/skel, and is in 'input' so catkeys can watch the keyboard.
+set -euo pipefail
+
+id kitty &>/dev/null && exit 0
+useradd --create-home --groups wheel,input,video,audio --shell /bin/bash \
+    --comment "kitty-os live user" kitty
+passwd --delete kitty >/dev/null
