@@ -73,13 +73,16 @@ jobs:
           grep -q '^\[kitty-os\]$' /etc/pacman.conf
       - name: Validate the sway config in both modes
         run: |
+          # The packaged binary carries file capabilities, which an
+          # unprivileged container refuses to run. A plain copy has none.
+          cp /usr/bin/sway /usr/local/bin/sway-check
           for mode in cat salma; do
-            runuser -u tester -- bash -euc "
+            runuser -u tester -- bash -euo pipefail -c "
               cd
               catmode $mode --no-apply
               mkdir -p /tmp/xdg-tester && chmod 700 /tmp/xdg-tester
               export XDG_RUNTIME_DIR=/tmp/xdg-tester WLR_BACKENDS=headless WLR_RENDERER=pixman WLR_LIBINPUT_NO_DEVICES=1
-              sway --validate 2>&1 | tee /tmp/sway-$mode.log
+              sway-check --validate 2>&1 | tee /tmp/sway-$mode.log
             "
             if grep -q 'Error on line' /tmp/sway-$mode.log; then exit 1; fi
           done
