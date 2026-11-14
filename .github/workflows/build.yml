@@ -44,7 +44,6 @@ jobs:
           pacman -U --noconfirm catkeys-*.pkg.tar.zst kitty-os-modes-*.pkg.tar.zst \
             kitty-os-salma-mode-*.pkg.tar.zst kitty-os-rice-*.pkg.tar.zst \
             kitty-os-release-*.pkg.tar.zst salmagpt-*.pkg.tar.zst
-          pacman -Si python-anthropic | head -n 3
       - name: Try the commands as a new user
         run: |
           useradd -m tester

@@ -10,8 +10,7 @@ def _sdk():
         import anthropic
     except ModuleNotFoundError:
         raise ProviderError(
-            "Claude needs the Anthropic SDK: sudo pacman -S python-anthropic "
-            "(or: pip install anthropic)") from None
+            "Claude needs the Anthropic Python SDK: pip install anthropic") from None
     return anthropic
 
 

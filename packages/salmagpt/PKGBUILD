@@ -6,7 +6,6 @@ arch=('any')
 url="https://github.com/cat-things/kitty-os"
 license=('MIT')
 depends=('python' 'python-rich' 'python-prompt_toolkit' 'ollama')
-optdepends=('python-anthropic: connect Claude')
 
 package() {
   local files="$startdir/files"

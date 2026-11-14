@@ -59,10 +59,8 @@ sudo bash kittyfy
 Log in on the first console (tty1) and the desktop starts. (Don't want that?
 `touch ~/.config/kitty-os/no-autostart`.)
 
-Releases are published by CI from the default branch. Until the first one
-exists, grab the ISO from the artifacts of the latest
-[build run](https://github.com/cat-things/kitty-os/actions/workflows/build.yml)
-or build it yourself (below).
+CI rebuilds the ISO and the package repository on every push to the default
+branch and publishes them as the `iso` and `repo` releases.
 
 ## Keys
 
@@ -204,7 +202,7 @@ conversation carries over.
 | `/disconnect NAME` | remove a connection |
 
 Keys you paste are stored in `~/.config/salmagpt/config.json`, readable only by
-you. Claude needs the `python-anthropic` package. Hosted models are billed by
+you. Claude needs the Anthropic Python SDK (`pip install anthropic`). Hosted models are billed by
 whoever runs them; only the built-in one is free.
 
 ## The package repository
