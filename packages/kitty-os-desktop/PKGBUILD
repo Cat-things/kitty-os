@@ -7,7 +7,7 @@ url="https://github.com/cat-things/kitty-os"
 license=('MIT')
 depends=(
   # kitty-os
-  'kitty-os-release' 'kitty-os-modes' 'kitty-os-salma-mode' 'kitty-os-rice' 'catkeys'
+  'kitty-os-release' 'kitty-os-modes' 'kitty-os-salma-mode' 'kitty-os-rice' 'catkeys' 'salmagpt'
   # desktop
   'sway' 'swaybg' 'swaylock' 'swayidle' 'waybar' 'fuzzel' 'mako' 'kitty'
   'grim' 'slurp' 'wl-clipboard' 'libnotify' 'brightnessctl' 'xorg-xwayland'

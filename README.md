@@ -24,6 +24,8 @@ that is on by default, and **Salma mode**, which is about one cat in particular.
   cat mode.
 - **catkeys:** notices when a cat is on the keyboard and locks it.
 - **Cat modes:** switch what the whole desktop is about with one command.
+- **SalmaGPT:** a coding assistant in your terminal, with a built-in model that
+  runs on your own hardware.
 - **`[kitty-os]` repository:** everything above is ordinary pacman packages.
 
 ## Get it
@@ -71,6 +73,7 @@ or build it yourself (below).
 | `Super+B` / `Super+E` | browser / files |
 | `Super+Shift+M` | next cat mode |
 | `Super+C` | cat fact |
+| `Super+G` | SalmaGPT |
 | `Super+U` / `Super+Shift+U` | unlock keyboard / pause cat detection |
 | `Super+Shift+S` / `Print` | screenshot of a region / everything |
 | `Super+Escape` | lock screen |
@@ -163,6 +166,47 @@ Then change `mode.conf` (name, icon, accent colour), `facts.txt`,
 `catkeys.txt`, `greeting.txt` and the colour in `sway.conf`, `kitty.conf` and
 `waybar.css`, and switch to it with `catmode mycat`.
 
+## SalmaGPT
+
+A coding assistant that lives in your terminal (`Super+G`, or run `salmagpt`).
+You talk to it, and it reads, searches, edits and runs things in the directory
+you started it in. Every file change and command is shown to you first; answer
+`y`, `a` (always, for this session), `n`, or just type what it should do instead.
+
+```bash
+salmagpt                     # chat
+salmagpt -p "why does the build fail?"    # one answer, then exit
+salmagpt --yolo              # never ask before changing files or running commands
+```
+
+**The built-in model** is called `salmagpt` and is free forever because it runs
+on your own hardware: no account, no key, and nothing you type leaves the
+machine. Get it once with `/setup` (or `salmagpt setup`). What that does: it
+downloads an open-weights coding model (Qwen2.5-Coder, Apache 2.0) through
+[Ollama](https://ollama.com) and gives it SalmaGPT's settings. Setup picks the
+7B model (4.7 GB) on machines with 12 GB of memory or more and the 1.5B model
+(1 GB) otherwise; set `SALMAGPT_BASE_MODEL` to choose another. A local model of
+this size is slower and makes more mistakes than the big hosted ones,
+especially without a GPU, so check its work.
+
+**Connect more AIs** with `/connect`: Claude (Anthropic), OpenAI, OpenRouter,
+Groq, or any OpenAI-compatible server such as llama.cpp, LM Studio or another
+Ollama. Switch between them mid-conversation with `/model`, and the
+conversation carries over.
+
+| Command | What |
+|---|---|
+| `/connect` | add an AI: pick the service, paste a key (or use an environment variable), pick models |
+| `/models`, `/model NAME` | list models, switch model |
+| `/setup` | download or update the built-in model |
+| `/yolo` | toggle approving everything automatically |
+| `/clear` | new conversation |
+| `/disconnect NAME` | remove a connection |
+
+Keys you paste are stored in `~/.config/salmagpt/config.json`, readable only by
+you. Claude needs the `python-anthropic` package. Hosted models are billed by
+whoever runs them; only the built-in one is free.
+
 ## The package repository
 
 ```ini
@@ -175,6 +219,7 @@ Server = https://github.com/cat-things/kitty-os/releases/download/repo
 |---|---|
 | `kitty-os-desktop` | everything; install this one |
 | `catkeys` | the cat keyboard detector (works on any Arch system) |
+| `salmagpt` | the coding assistant (works on any Arch system) |
 | `kitty-os-modes` | `catmode`, `catfact`, `catsay`, `pspsps`, cat mode |
 | `kitty-os-salma-mode` | Salma mode |
 | `kitty-os-rice` | desktop configs and wallpapers |
@@ -215,7 +260,7 @@ python3 -m unittest discover -s tests
 packages/   one directory per package: PKGBUILD + files/
 iso/        ISO build script, overlay and package list
 scripts/    build-repo.sh, kittyfy (installer), make-wallpapers.py
-tests/      unit tests for catkeys, the modes and Salma mode
+tests/      unit tests for catkeys, the modes, Salma mode and SalmaGPT
 ```
 
 ## Licence

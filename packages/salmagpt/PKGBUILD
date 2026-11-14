@@ -1,0 +1,18 @@
+pkgname=salmagpt
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Coding assistant for the terminal: connect several AIs, or use the built-in local model"
+arch=('any')
+url="https://github.com/cat-things/kitty-os"
+license=('MIT')
+depends=('python' 'python-rich' 'python-prompt_toolkit' 'ollama')
+optdepends=('python-anthropic: connect Claude')
+
+package() {
+  local files="$startdir/files"
+  install -d "$pkgdir/usr/lib/salmagpt/salmagpt/providers"
+  install -m644 "$files"/salmagpt/*.py "$pkgdir/usr/lib/salmagpt/salmagpt/"
+  install -m644 "$files"/salmagpt/providers/*.py "$pkgdir/usr/lib/salmagpt/salmagpt/providers/"
+  install -Dm755 "$files/salmagpt.bin" "$pkgdir/usr/bin/salmagpt"
+  install -Dm644 "$startdir/../../LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

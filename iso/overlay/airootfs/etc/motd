@@ -7,7 +7,9 @@
  Super+Shift+M  next cat mode       Super+C        cat fact
  Super+U        unlock keyboard     Super+Shift+E  leave
 
- Try:  catmode salma    catfact    pspsps    catkeys test
+ Super+G        SalmaGPT, the coding assistant
+
+ Try:  catmode salma    catfact    pspsps    catkeys test    salmagpt
 
  To install: run 'sudo archinstall', and when it asks whether to chroot into
  the new system say no, then run 'sudo kittyfy /mnt'.

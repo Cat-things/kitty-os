@@ -31,7 +31,7 @@ jobs:
     container: archlinux:latest
     steps:
       - name: Install build tools
-        run: pacman -Syu --noconfirm --needed base-devel git sway python-evdev fastfetch fish
+        run: pacman -Syu --noconfirm --needed base-devel git sway python-evdev fastfetch fish python-rich python-prompt_toolkit ollama
       - uses: actions/checkout@v4
       - name: Build the package repository
         run: |
@@ -43,7 +43,8 @@ jobs:
           cd out/repo
           pacman -U --noconfirm catkeys-*.pkg.tar.zst kitty-os-modes-*.pkg.tar.zst \
             kitty-os-salma-mode-*.pkg.tar.zst kitty-os-rice-*.pkg.tar.zst \
-            kitty-os-release-*.pkg.tar.zst
+            kitty-os-release-*.pkg.tar.zst salmagpt-*.pkg.tar.zst
+          pacman -Si python-anthropic | head -n 3
       - name: Try the commands as a new user
         run: |
           useradd -m tester
@@ -65,6 +66,9 @@ jobs:
             catkeys stats
             catkeys waybar
             catkeys --version
+            salmagpt --version
+            test "$(salmagpt models)" = local/salmagpt
+            if salmagpt -p hi; then echo "the built-in model cannot be ready here"; exit 1; fi
             fish --no-execute /usr/share/fish/vendor_conf.d/kitty-os.fish
             sh -eu /etc/profile.d/kitty-os-desktop.sh
             fastfetch
