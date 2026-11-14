@@ -31,7 +31,7 @@ jobs:
     container: archlinux:latest
     steps:
       - name: Install build tools
-        run: pacman -Syu --noconfirm --needed base-devel git sway python-evdev fastfetch
+        run: pacman -Syu --noconfirm --needed base-devel git sway python-evdev fastfetch fish
       - uses: actions/checkout@v4
       - name: Build the package repository
         run: |
@@ -65,6 +65,8 @@ jobs:
             catkeys stats
             catkeys waybar
             catkeys --version
+            fish -c "source /usr/share/fish/vendor_conf.d/kitty-os.fish; fish_greeting"
+            sh -eu /etc/profile.d/kitty-os-desktop.sh
             fastfetch
           '
           grep -q '^ID=kitty-os$' /etc/os-release

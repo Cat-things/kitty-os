@@ -13,7 +13,7 @@ depends=(
   'grim' 'slurp' 'wl-clipboard' 'libnotify' 'brightnessctl' 'xorg-xwayland'
   'xdg-desktop-portal-wlr' 'xdg-user-dirs' 'xdg-utils' 'polkit' 'mesa'
   # apps
-  'thunar' 'imv' 'pavucontrol' 'fastfetch' 'starship'
+  'thunar' 'imv' 'pavucontrol' 'fastfetch' 'starship' 'fish'
   # sound
   'pipewire' 'pipewire-pulse' 'wireplumber'
   # fonts

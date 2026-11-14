@@ -19,8 +19,8 @@ that is on by default, and **Salma mode**, which is about one cat in particular.
 
 - **Base:** Arch Linux. Rolling, pacman, the AUR, the Arch wiki all apply.
 - **Desktop:** sway with gaps, a floating pill-style waybar, the kitty
-  terminal, fuzzel launcher, mako notifications, swaylock, starship prompt and
-  fastfetch, all in Catppuccin Mocha with an accent colour that follows the
+  terminal with fish, fuzzel launcher, mako notifications, swaylock, starship
+  prompt and fastfetch, all in Catppuccin Mocha with an accent colour that follows the
   cat mode.
 - **catkeys:** notices when a cat is on the keyboard and locks it.
 - **Cat modes:** switch what the whole desktop is about with one command.
@@ -47,14 +47,15 @@ sudo kittyfy /mnt
 **Already on Arch?** Turn the install you have into kitty-os:
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/cat-things/kitty-os/main/scripts/kittyfy
+curl -fsSLO https://raw.githubusercontent.com/cat-things/kitty-os/HEAD/scripts/kittyfy
 ```
 
 ```bash
 sudo bash kittyfy
 ```
 
-Log in on the first console (tty1) and the desktop starts.
+Log in on the first console (tty1) and the desktop starts. (Don't want that?
+`touch ~/.config/kitty-os/no-autostart`.)
 
 Releases are published by CI from the default branch. Until the first one
 exists, grab the ISO from the artifacts of the latest
